@@ -3,6 +3,7 @@ module Screen {
     requires javafx.graphics;
     requires javafx.media;
     requires javafx.base;
+    requires java.sql;
 
     exports Screen;
 }
