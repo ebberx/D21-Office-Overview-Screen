@@ -54,7 +54,7 @@ public class DB {
     /**
      * Establishes a connection to the database
      */
-    private void connect() {
+    public void connect() {
         try {
             con = DriverManager.getConnection("jdbc:sqlserver://" + host + ":"+port+";databaseName="+databaseName,userName,password);
         }
@@ -67,7 +67,7 @@ public class DB {
     /**
      * Disconnects the connection to the database
      */
-    private void disconnect() {
+    public void disconnect() {
         try {
             con.close();
         }
@@ -84,7 +84,7 @@ public class DB {
     public ArrayList<Consultant> getConsultantsInOffice(String officeName) {
         try {
             // Query stored procedure
-            PreparedStatement ps = con.prepareStatement("call getConsultantsInOficce ?");
+            PreparedStatement ps = con.prepareStatement("{ call getConsultantsInOffice (?) }");
             ps.setString(1, officeName);
             ResultSet rs = ps.executeQuery();
 
@@ -99,15 +99,18 @@ public class DB {
                 // Data from ResultSet
                 String email    = rs.getString(1);
                 String name     = rs.getString(2);
-                String office   = rs.getString(3);
-                String pom_time = rs.getString(4);
-                String b_time   = rs.getString(5);
-                String lb_time  = rs.getString(6);
-                boolean active  = rs.getBoolean(7);
-                int order       = rs.getInt(8);
+                int order       = rs.getInt(3);
+                String office   = rs.getString(4);
+                String pom_time = rs.getString(5);
+                String b_time   = rs.getString(6);
+                String lb_time  = rs.getString(7);
+                boolean active  = rs.getBoolean(8);
+                String status   = rs.getString(9);
 
-                // Create new consultant object
-                consultants.add(new Consultant(email, name));
+                // Create new consultant object and add
+                Consultant c = new Consultant(email, name);
+                c.setStatus(status);
+                consultants.add(c);
             }
 
             return consultants;
@@ -121,11 +124,12 @@ public class DB {
      * @param consultant Consultant of which to get Workdays
      * @return ArrayList of the Consultants' Workdays
      */
-    public ArrayList<Workday> getWorkdaysOfConsultant(Consultant consultant) {
+    public ArrayList<Workday> getWorkdaysOfConsultant(Consultant consultant, String dateTime) {
         try {
             // Query stored procedure
-            PreparedStatement ps = con.prepareStatement("call getWorkdaysOfConsultant ?");
+            PreparedStatement ps = con.prepareStatement("{ call getWorkdaysOfConsultant (?,?) }");
             ps.setString(1, consultant.getEmail());
+            ps.setString(2, dateTime);
             ResultSet rs = ps.executeQuery();
 
             // If we receive an empty ResultSet throw exception
@@ -148,7 +152,7 @@ public class DB {
 
                 // Create a new consultant object
                 try {
-                    workdays.add(new Workday(id, consultant, LocalDateTime.parse(start), LocalDateTime.parse(end), updated));
+                    workdays.add(new Workday(id, LocalDateTime.parse(start), LocalDateTime.parse(end), updated));
                 }
                 catch (Exception e) { e.printStackTrace(); }
             }
@@ -165,7 +169,7 @@ public class DB {
      */
     public void getPomodorosInWorkday(Workday workday) {
         try {
-            PreparedStatement ps = con.prepareStatement("call getPomodorosInWorkday ?");
+            PreparedStatement ps = con.prepareStatement("{ call getPomodorosInWorkday (?) }");
             ps.setInt(1, workday.id);
             ResultSet rs = ps.executeQuery();
 
@@ -207,7 +211,7 @@ public class DB {
      */
     public void getStatusOfConsultant(Consultant consultant) {
         try {
-            PreparedStatement ps = con.prepareStatement("getStatusOfConsultant ?");
+            PreparedStatement ps = con.prepareStatement("{ call getStatusOfConsultant (?) }");
             ps.setString(1, consultant.getEmail());
             ResultSet rs = ps.executeQuery();
 
