@@ -1,21 +1,20 @@
 package Screen;
 
+import java.util.ArrayList;
+
 public class Consultant {
 
     private String email;
     private String name;
-    private Status status;
-    private PomodoroSettings ps;
+    private String status;
 
-    public Consultant(String email, String name, Status status, PomodoroSettings ps) {
+    public Consultant(String email, String name) {
         this.email = email;
         this.name = name;
-        this.status = status;
-        this.ps = ps;
     }
 
     public String getEmail() { return email; }
     public String getName() { return name; }
-    public Status getStatus() { return status; }
-    public PomodoroSettings getSettings() { return ps; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

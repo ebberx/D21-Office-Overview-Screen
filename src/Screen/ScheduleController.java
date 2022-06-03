@@ -14,12 +14,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.time.Duration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class ScheduleController extends Application {
 
@@ -30,9 +34,20 @@ public class ScheduleController extends Application {
     ArrayList<Consultant> consultants = new ArrayList<Consultant>();
     ArrayList<Workday> workdays = new ArrayList<Workday>();
     GraphicsContext gc;
+    String officeName;
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        // Load office name from configuration file
+        {
+            try {
+                Properties props = new Properties();
+                props.load(new FileInputStream("conf.properties"));
+                officeName = props.getProperty("office", "Main office");
+            }
+            catch (Exception e) { e.printStackTrace(); }
+        }
 
         this.stage = stage; // save stage for later use
         stage.setTitle("Pomodoro Overview");
@@ -41,16 +56,16 @@ public class ScheduleController extends Application {
         // Setup test data
         PomodoroSettings ps = new PomodoroSettings("11", "25", "35");
 
-        consultants.add(new Consultant("test@testesen.dk", "Test Testesen", new Status(0, "Working"), new PomodoroSettings("1", "2", "3")));
-        consultants.add(new Consultant("test2@testesen.dk", "Test 2 Testesen", new Status(0, "Working"), new PomodoroSettings("1", "2", "3")));
-        consultants.add(new Consultant("test3@testesen.dk", "Test 3 Testesen", new Status(0, "Working"), new PomodoroSettings("1", "2", "3")));
-        consultants.add(new Consultant("test4@testesen.dk", "Test 4 Testesen", new Status(0, "Working"), new PomodoroSettings("1", "2", "3")));
-        consultants.add(new Consultant("test5@testesen.dk", "Test 5 Testesen", new Status(0, "Working"), new PomodoroSettings("1", "2", "3")));
+        consultants.add(new Consultant("test@testesen.dk", "Test Testesen"));
+        consultants.add(new Consultant("test2@testesen.dk", "Test 2 Testesen"));
+        consultants.add(new Consultant("test3@testesen.dk", "Test 3 Testesen"));
+        consultants.add(new Consultant("test4@testesen.dk", "Test 4 Testesen"));
+        consultants.add(new Consultant("test5@testesen.dk", "Test 5 Testesen"));
 
-        workdays.add(new Workday(0, consultants.get(0), LocalDateTime.now(), LocalDateTime.now().plusHours(8), ps));
-        workdays.add(new Workday(1, consultants.get(1), LocalDateTime.now(), LocalDateTime.now().plusHours(8), ps));
-        workdays.add(new Workday(2, consultants.get(2), LocalDateTime.now(), LocalDateTime.now().plusHours(8), ps));
-        workdays.add(new Workday(3, consultants.get(3), LocalDateTime.now(), LocalDateTime.now().plusHours(8), ps));
+        workdays.add(new Workday(0, consultants.get(0), LocalDateTime.now(), LocalDateTime.now().plusHours(8), "123"));
+        workdays.add(new Workday(1, consultants.get(1), LocalDateTime.now(), LocalDateTime.now().plusHours(8), "123"));
+        workdays.add(new Workday(2, consultants.get(2), LocalDateTime.now(), LocalDateTime.now().plusHours(8), "123"));
+        workdays.add(new Workday(3, consultants.get(3), LocalDateTime.now(), LocalDateTime.now().plusHours(8), "123"));
 
         workdays.get(0).pomodoros.add(new Pomodoro(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusMinutes(25)), Duration.between(LocalDateTime.now(), LocalDateTime.now().plusMinutes(7)), LocalDateTime.now(), LocalDateTime.now().plusMinutes(32)));
         workdays.get(0).pomodoros.add(new Pomodoro(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusMinutes(25)), Duration.between(LocalDateTime.now(), LocalDateTime.now().plusMinutes(7)), LocalDateTime.now().plusMinutes(32), LocalDateTime.now().plusMinutes(64)));
