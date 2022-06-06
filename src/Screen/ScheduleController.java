@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.sql.Date;
 import java.time.Duration;
 
 import java.time.LocalDate;
@@ -78,7 +79,7 @@ public class ScheduleController extends Application {
         DB.getInstance().connect();
         consultants = DB.getInstance().getConsultantsInOffice(officeName);
         for(Consultant c : consultants) {
-            c.setWorkdays(DB.getInstance().getWorkdaysOfConsultant(c, "2022-06-02 00:00:00"));
+            c.setWorkdays(DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00"));
 
             if(c.getWorkdays() != null) {
                 for(Workday w : c.getWorkdays()) {
@@ -140,6 +141,9 @@ public class ScheduleController extends Application {
                 gc.fillText(c.getName(), 10, schedulePaddingTop + 12 + (100*i));
                 i++;
             }
+
+
+
         }
 
 
