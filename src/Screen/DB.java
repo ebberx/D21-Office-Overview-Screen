@@ -135,7 +135,8 @@ public class DB {
 
             // If we receive an empty ResultSet throw exception
             if (!rs.isBeforeFirst() ) {
-                throw new SQLException();
+                System.out.println("[getWorkdaysOfConsultant]: Empty resultset received.");
+                return null;
             }
 
             // Get workday list for given consultant
@@ -191,10 +192,11 @@ public class DB {
                 String break_time = rs.getString(5);
 
                 // Convert data to java data types
-                Duration work_time_dur      = Duration.between(LocalTime.parse("00:00:00"), LocalDateTime.parse(work_time).toLocalTime());
-                Duration break_time_dur     = Duration.between(LocalTime.parse("00:00:00"), LocalDateTime.parse(break_time).toLocalTime());
-                LocalDateTime startDateTime = LocalDateTime.parse(start);
-                LocalDateTime endDateTime   = LocalDateTime.parse(end);
+                Duration work_time_dur      = Duration.between(LocalTime.parse("00:00:00"), LocalTime.parse(work_time));
+                Duration break_time_dur     = Duration.between(LocalTime.parse("00:00:00"), LocalTime.parse(break_time));
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                LocalDateTime startDateTime = LocalDateTime.parse(start, df);
+                LocalDateTime endDateTime   = LocalDateTime.parse(end, df);
 
                 // Create Pomodoro and add to list
                 pomodoros.add(new Pomodoro(work_time_dur, break_time_dur, startDateTime, endDateTime));

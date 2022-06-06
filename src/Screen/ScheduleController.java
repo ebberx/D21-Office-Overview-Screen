@@ -115,29 +115,6 @@ public class ScheduleController extends Application {
         gc.setFont(font);
 
         int i = 0;
-        /*
-        for(Workday w : workdays) {
-            gc.setFill(Color.BLACK);
-            gc.fillRect(0, schedulePaddingTop + 18 + (100*i), canvas.getWidth(), 54);
-            gc.setFill(Color.WHITE);
-            gc.fillRect(0, schedulePaddingTop + 20 + (100*i), canvas.getWidth(), 50);
-
-            // Draw schedule
-            for(Pomodoro p : w.pomodoros) {
-                gc.setFill(Color.web("FF6962"));
-                gc.fillRect(timeToCanvasX(p.start), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration), 50);
-
-                gc.setFill(Color.web("77DD76"));
-                double breakX = timeToCanvasX(p.start) + pixelsInTimespan(p.workDuration);
-                gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration), 50);
-            }
-
-            // Draw name
-            gc.setFill(Color.BLACK);
-            gc.fillText(w.consultant.getEmail(), 10, schedulePaddingTop + 12 + (100*i));
-            i++;
-        }
-        */
         if(consultants != null) {
             for(Consultant c : consultants) {
                 gc.setFill(Color.BLACK);
@@ -146,14 +123,16 @@ public class ScheduleController extends Application {
                 gc.fillRect(0, schedulePaddingTop + 20 + (100*i), canvas.getWidth(), 50);
 
                 // Draw schedule
-                Workday w = c.getWorkdays().get(0);
-                for(Pomodoro p : w.pomodoros) {
-                    gc.setFill(Color.web("FF6962"));
-                    gc.fillRect(timeToCanvasX(p.start), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration), 50);
+                if(c.getWorkdays() != null) {
+                    Workday w = c.getWorkdays().get(0);
+                    for(Pomodoro p : w.pomodoros) {
+                        gc.setFill(Color.web("FF6962"));
+                        gc.fillRect(timeToCanvasX(p.start), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration), 50);
 
-                    gc.setFill(Color.web("77DD76"));
-                    double breakX = timeToCanvasX(p.start) + pixelsInTimespan(p.workDuration);
-                    gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration), 50);
+                        gc.setFill(Color.web("77DD76"));
+                        double breakX = timeToCanvasX(p.start) + pixelsInTimespan(p.workDuration);
+                        gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration), 50);
+                    }
                 }
 
                 // Draw name
