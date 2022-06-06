@@ -7,6 +7,7 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -152,7 +153,8 @@ public class DB {
 
                 // Create a new consultant object
                 try {
-                    workdays.add(new Workday(id, LocalDateTime.parse(start), LocalDateTime.parse(end), updated));
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                    workdays.add(new Workday(id, LocalDateTime.parse(start, df), LocalDateTime.parse(end, df), updated));
                 }
                 catch (Exception e) { e.printStackTrace(); }
             }
