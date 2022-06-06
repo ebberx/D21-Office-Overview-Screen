@@ -79,6 +79,12 @@ public class ScheduleController extends Application {
         consultants = DB.getInstance().getConsultantsInOffice(officeName);
         for(Consultant c : consultants) {
             c.setWorkdays(DB.getInstance().getWorkdaysOfConsultant(c, "2022-06-02 00:00:00"));
+
+            if(c.getWorkdays() != null) {
+                for(Workday w : c.getWorkdays()) {
+                    DB.getInstance().getPomodorosInWorkday(w);
+                }
+            }
         }
 
         // Start render update with frequency of 1 sec
@@ -152,7 +158,7 @@ public class ScheduleController extends Application {
 
                 // Draw name
                 gc.setFill(Color.BLACK);
-                gc.fillText(c.getEmail(), 10, schedulePaddingTop + 12 + (100*i));
+                gc.fillText(c.getName(), 10, schedulePaddingTop + 12 + (100*i));
                 i++;
             }
         }
