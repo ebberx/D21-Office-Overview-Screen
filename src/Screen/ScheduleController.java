@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -34,7 +35,9 @@ public class ScheduleController extends Application {
     Canvas canvas;
     ArrayList<Consultant> consultants = new ArrayList<Consultant>();
     GraphicsContext gc;
+
     String officeName;
+    int displayScreen;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -45,6 +48,12 @@ public class ScheduleController extends Application {
                 Properties props = new Properties();
                 props.load(new FileInputStream("conf.properties"));
                 officeName = props.getProperty("office", "Main office");
+                displayScreen = Integer.parseInt(props.getProperty("screen", "1"));
+
+                // -== Validation of configuration values ==-
+                // Is screen is valid? Primary if not
+                if(Screen.getScreens().get(displayScreen) == null)
+                    displayScreen = 0;
             }
             catch (Exception e) { e.printStackTrace(); }
         }
@@ -59,8 +68,9 @@ public class ScheduleController extends Application {
         scene = new Scene(scheduleRoot);
 
         // Canvas the size of the screen
-        double width = Screen.getPrimary().getBounds().getWidth();
-        double height = Screen.getPrimary().getBounds().getHeight();
+
+        double width = Screen.getScreens().get(displayScreen).getBounds().getWidth();
+        double height = Screen.getScreens().get(displayScreen).getBounds().getHeight();
         System.out.println("[Screen] Width: " + width + " Height: " + height);
         canvas = new Canvas(width, height);
         canvas.getGraphicsContext2D().setFontSmoothingType(FontSmoothingType.LCD);
@@ -68,6 +78,8 @@ public class ScheduleController extends Application {
         // Add to stage/scene
         scheduleRoot.getChildren().add(canvas);
         stage.setScene(scene);
+        stage.setX(Screen.getScreens().get(displayScreen).getBounds().getMinX());
+        stage.setY(Screen.getScreens().get(displayScreen).getBounds().getMinY());
         stage.show();
 
         // Exit properly
@@ -87,6 +99,7 @@ public class ScheduleController extends Application {
                 }
             }
         }
+        DB.getInstance().disconnect();
 
         // Start render update with frequency of 1 sec
         Timeline tl = new Timeline(new KeyFrame(javafx.util.Duration.millis(1000), (e) ->{
@@ -96,7 +109,7 @@ public class ScheduleController extends Application {
         tl.play();
     }
 
-    int schedulePaddingTop = 60;
+    int schedulePaddingTop = 100;
     public long render() {
         long start = System.nanoTime();
 
@@ -106,11 +119,15 @@ public class ScheduleController extends Application {
         // Clear canvas before drawing
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        // Background
+        gc.setFill(Color.web("#EEF5FD"));
+        gc.fillRect(0,0,canvas.getWidth(), canvas.getHeight());
+
         // Draw time
         gc.setFill(Color.BLACK);
         Font font = new Font("Segoe UI", 38);
         gc.setFont(font);
-        gc.fillText("12:00", canvas.getWidth() / 2 - 50, 30);
+        gc.fillText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")), canvas.getWidth() / 2 - 50, 46);
 
         font = new Font("Segoe UI", 18);
         gc.setFont(font);
@@ -142,8 +159,37 @@ public class ScheduleController extends Application {
                 i++;
             }
 
+            // Draw timeline
+            double timelineY = canvas.getHeight() - (canvas.getHeight() / 20);
+            double timelineH = canvas.getHeight() / 20;
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, timelineY, canvas.getWidth(), timelineH);
+            //gc.setFill(Color.web("#EEF5FD"));
+            gc.setFill(Color.WHITE);
+            gc.fillRect(4, timelineY+4, canvas.getWidth()-8, timelineH-8);
 
+            gc.setFill(Color.BLACK);
+            font = new Font("Segoe UI", 12);
+            gc.setFont(font);
 
+            gc.setLineWidth(1);
+            double l = timelineH/8;
+            gc.setLineDashes( l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l);
+            gc.strokeLine(0,timelineY+timelineH/2, canvas.getWidth(), timelineY+timelineH/2);
+            gc.setLineWidth(2);
+            gc.setLineDashes(0);
+            for(int j = -3; j < 8; j++){
+                LocalTime hour = LocalTime.of(LocalTime.now().getHour(), 0);
+                LocalDateTime date = LocalDateTime.of(LocalDate.now(), hour);
+
+                gc.strokeLine(timeToCanvasX(date.plusHours(j)),
+                        timelineY+2, timeToCanvasX(date.plusHours(j)), timelineY+timelineH);
+                gc.setFill(Color.WHITE);
+                gc.fillRect(timeToCanvasX(date.plusHours(j))-19, timelineY + timelineH / 2 -10, 40, 20);
+                gc.setFill(Color.BLACK);
+                gc.fillText(hour.plusHours(j).format(DateTimeFormatter.ofPattern("HH:mm")),
+                        timeToCanvasX(date.plusHours(j))-14, timelineY + timelineH / 2 + 4);
+            }
         }
 
 
