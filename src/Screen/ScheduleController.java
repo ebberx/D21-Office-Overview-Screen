@@ -91,7 +91,7 @@ public class ScheduleController extends Application {
         DB.getInstance().connect();
         consultants = DB.getInstance().getConsultantsInOffice(officeName);
         for(Consultant c : consultants) {
-            c.setWorkdays(DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00"));
+            DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00");
 
             if(c.getWorkdays() != null) {
                 for(Workday w : c.getWorkdays()) {
@@ -192,7 +192,6 @@ public class ScheduleController extends Application {
                         timeToCanvasX(date.plusHours(j))-14, timelineY + timelineH / 2 + 4);
             }
         }
-
 
         // Draw time slider
         double sliderX = canvas.getWidth() / 8 * 2;

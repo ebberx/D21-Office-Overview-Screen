@@ -5,5 +5,8 @@ module Screen {
     requires javafx.base;
     requires java.sql;
 
+    requires junit;
+
     exports Screen;
+    exports Test;
 }

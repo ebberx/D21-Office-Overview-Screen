@@ -53,7 +53,7 @@ public class DB {
     }
 
     /**
-     * Establishes a connection to the database
+     * Establishes a connection to the database.
      */
     public void connect() {
         try {
@@ -66,7 +66,7 @@ public class DB {
     }
 
     /**
-     * Disconnects the connection to the database
+     * Disconnects the connection to the database.
      */
     public void disconnect() {
         try {
@@ -76,6 +76,32 @@ public class DB {
             System.err.println(e.getMessage());
         }
     }
+
+    /**
+     * Validates the connection to the server.
+     * @return True if connection is valid, false if otherwise.
+     */
+    public boolean validateConnection() {
+        try {
+            return con.isValid(1000);
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the databse name that should be used when connecting to the databse server.
+     * @return the database name for future connections.
+     */
+    public String getDatabaseName() { return databaseName; }
+
+    /**
+     * Sets the database name that the DB class should connect to.
+     * In order to change databse, it is necessary to disconnect and reconnect.
+     * @param dbName the name of the database in the MS SQL server
+     */
+    public void setDatabaseName(String dbName) { this.databaseName = dbName; }
 
     /**
      * Invokes stored procedure that takes a String officeName, and returns associated Consultants
@@ -125,7 +151,7 @@ public class DB {
      * @param consultant Consultant of which to get Workdays
      * @return ArrayList of the Consultants' Workdays
      */
-    public ArrayList<Workday> getWorkdaysOfConsultant(Consultant consultant, String dateTime) {
+    public void getWorkdaysOfConsultant(Consultant consultant, String dateTime) {
         try {
             // Query stored procedure
             PreparedStatement ps = con.prepareStatement("{ call getWorkdaysOfConsultant (?,?) }");
@@ -136,7 +162,7 @@ public class DB {
             // If we receive an empty ResultSet throw exception
             if (!rs.isBeforeFirst() ) {
                 System.out.println("[getWorkdaysOfConsultant]: Empty resultset received.");
-                return null;
+                return;
             }
 
             // Get workday list for given consultant
@@ -158,11 +184,12 @@ public class DB {
                     workdays.add(new Workday(id, LocalDateTime.parse(start, df), LocalDateTime.parse(end, df), updated));
                 }
                 catch (Exception e) { e.printStackTrace(); }
+
+                // Assign workdays to consultant
+                consultant.setWorkdays(workdays);
             }
-            return workdays;
         }
         catch (Exception e) { e.printStackTrace(); }
-        return null;
     }
 
     /**
