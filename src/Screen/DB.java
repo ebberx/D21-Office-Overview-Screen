@@ -221,7 +221,7 @@ public class DB {
                 // Convert data to java data types
                 Duration work_time_dur      = Duration.between(LocalTime.parse("00:00:00"), LocalTime.parse(work_time));
                 Duration break_time_dur     = Duration.between(LocalTime.parse("00:00:00"), LocalTime.parse(break_time));
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                DateTimeFormatter df        = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
                 LocalDateTime startDateTime = LocalDateTime.parse(start, df);
                 LocalDateTime endDateTime   = LocalDateTime.parse(end, df);
 

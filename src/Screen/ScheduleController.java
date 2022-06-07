@@ -36,27 +36,55 @@ public class ScheduleController extends Application {
     ArrayList<Consultant> consultants = new ArrayList<Consultant>();
     GraphicsContext gc;
 
+    // Configuration values
     String officeName;
     int displayScreen;
 
+    /**
+     * Returns the x value along the time axis in the applications timeline for a given time value.
+     * @param time The time parameter that is to be converted to a value x along the time axis.
+     * @param canvasWidth Width of the timespan in pixels
+     * @return X value along the time axis
+     */
+    public static double timeToCanvasX(LocalDateTime time, double canvasWidth) {
+        double pixelsPerHour = canvasWidth / 8;
+        double currentTimeInPixels = pixelsPerHour * 2;
+        java.time.Duration delta = java.time.Duration.between(LocalDateTime.now(), time);
+        return (((double)delta.toSeconds() / 3600) * pixelsPerHour) + currentTimeInPixels;
+    }
+
+    /**
+     * Returns an amount of pixels represented by a timespan.
+     * @param time The time span
+     * @param canvasWidth The width of the total timespan of 8 hours
+     * @return Timespan in pixels
+     */
+    public static double pixelsInTimespan(java.time.Duration time, double canvasWidth) {
+        double pixelsPerHour = canvasWidth / 8;
+        return ((double)time.toSeconds() / 3600) * pixelsPerHour;
+    }
+
+    /**
+     * Entry point of application
+     * @param stage JavaFX element that holds main scene.
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
 
         // Load office name from configuration file
-        {
-            try {
-                Properties props = new Properties();
-                props.load(new FileInputStream("conf.properties"));
-                officeName = props.getProperty("office", "Main office");
-                displayScreen = Integer.parseInt(props.getProperty("screen", "1"));
+        try {
+            Properties props = new Properties();
+            props.load(new FileInputStream("conf.properties"));
+            officeName = props.getProperty("office", "Main office");
+            displayScreen = Integer.parseInt(props.getProperty("screen", "1"));
 
-                // -== Validation of configuration values ==-
-                // Is screen is valid? Primary if not
-                if(Screen.getScreens().get(displayScreen) == null)
-                    displayScreen = 0;
-            }
-            catch (Exception e) { e.printStackTrace(); }
+            // -== Validation of configuration values ==-
+            // Is screen is valid? Primary if not
+            if(Screen.getScreens().get(displayScreen) == null)
+                displayScreen = 0;
         }
+        catch (Exception e) { e.printStackTrace(); }
 
         this.stage = stage; // save stage for later use
         stage.setTitle("Pomodoro Overview");
@@ -68,7 +96,6 @@ public class ScheduleController extends Application {
         scene = new Scene(scheduleRoot);
 
         // Canvas the size of the screen
-
         double width = Screen.getScreens().get(displayScreen).getBounds().getWidth();
         double height = Screen.getScreens().get(displayScreen).getBounds().getHeight();
         System.out.println("[Screen] Width: " + width + " Height: " + height);
@@ -107,9 +134,33 @@ public class ScheduleController extends Application {
         }));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
+
+        // Start data update with frequency of 60 sec
+        Timeline t2 = new Timeline(new KeyFrame(javafx.util.Duration.millis(60000), (e) ->{
+            System.out.printf("Fetching schedule update time: %d microseconds\n", fetchScheduleUpdates() / 1000);
+        }));
+        t2.setCycleCount(Timeline.INDEFINITE);
+        t2.play();
     }
 
+    /**
+     * Checks for new data in the database, retrieves it, and prepares it for rendering
+     * @return time spend fetching schedule update
+     */
+    public long fetchScheduleUpdates() {
+        long start = System.nanoTime();
+
+
+
+        return System.nanoTime() - start;
+    }
+
+
     int schedulePaddingTop = 100;
+    /**
+     * Renders the pomodoro schedule of consultants to screen
+     * @return time spent rendering
+     */
     public long render() {
         long start = System.nanoTime();
 
@@ -145,11 +196,11 @@ public class ScheduleController extends Application {
                     for(Workday w : c.getWorkdays()) {
                         for(Pomodoro p : w.pomodoros) {
                             gc.setFill(Color.web("FF6962"));
-                            gc.fillRect(timeToCanvasX(p.start), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration), 50);
+                            gc.fillRect(timeToCanvasX(p.start, canvas.getWidth()), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration, canvas.getWidth()), 50);
 
                             gc.setFill(Color.web("77DD76"));
-                            double breakX = timeToCanvasX(p.start) + pixelsInTimespan(p.workDuration);
-                            gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration), 50);
+                            double breakX = timeToCanvasX(p.start, canvas.getWidth()) + pixelsInTimespan(p.workDuration, canvas.getWidth());
+                            gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration, canvas.getWidth()), 50);
                         }
                     }
                 }
@@ -158,38 +209,6 @@ public class ScheduleController extends Application {
                 gc.setFill(Color.BLACK);
                 gc.fillText(c.getName(), 10, schedulePaddingTop + 12 + (100*i));
                 i++;
-            }
-
-            // Draw timeline
-            double timelineY = canvas.getHeight() - (canvas.getHeight() / 20);
-            double timelineH = canvas.getHeight() / 20;
-            gc.setFill(Color.BLACK);
-            gc.fillRect(0, timelineY, canvas.getWidth(), timelineH);
-            //gc.setFill(Color.web("#EEF5FD"));
-            gc.setFill(Color.WHITE);
-            gc.fillRect(4, timelineY+4, canvas.getWidth()-8, timelineH-8);
-
-            gc.setFill(Color.BLACK);
-            font = new Font("Segoe UI", 12);
-            gc.setFont(font);
-
-            gc.setLineWidth(1);
-            double l = timelineH/8;
-            gc.setLineDashes( l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l);
-            gc.strokeLine(0,timelineY+timelineH/2, canvas.getWidth(), timelineY+timelineH/2);
-            gc.setLineWidth(2);
-            gc.setLineDashes(0);
-            for(int j = -3; j < 8; j++){
-                LocalTime hour = LocalTime.of(LocalTime.now().getHour(), 0);
-                LocalDateTime date = LocalDateTime.of(LocalDate.now(), hour);
-
-                gc.strokeLine(timeToCanvasX(date.plusHours(j)),
-                        timelineY+2, timeToCanvasX(date.plusHours(j)), timelineY+timelineH);
-                gc.setFill(Color.WHITE);
-                gc.fillRect(timeToCanvasX(date.plusHours(j))-19, timelineY + timelineH / 2 -10, 40, 20);
-                gc.setFill(Color.BLACK);
-                gc.fillText(hour.plusHours(j).format(DateTimeFormatter.ofPattern("HH:mm")),
-                        timeToCanvasX(date.plusHours(j))-14, timelineY + timelineH / 2 + 4);
             }
         }
 
@@ -201,22 +220,43 @@ public class ScheduleController extends Application {
         gc.setFill(Color.BLACK);
         gc.fillRect(sliderX, sliderY, sliderW, sliderH);
 
+        // Draw timeline
+        double timelineY = canvas.getHeight() - (canvas.getHeight() / 20);
+        double timelineH = canvas.getHeight() / 20;
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0, timelineY, canvas.getWidth(), timelineH);
+
+        gc.setFill(Color.BLACK);
+        font = new Font("Segoe UI", 12);
+        gc.setFont(font);
+
+        gc.setLineWidth(1);
+        double l = timelineH/8;
+        gc.setLineDashes( l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l);
+        gc.strokeLine(0,timelineY+timelineH/2, canvas.getWidth(), timelineY+timelineH/2);
+        gc.setLineWidth(2);
+        gc.setLineDashes(0);
+        for(int j = -3; j < 8; j++){
+            LocalTime hour = LocalTime.of(LocalTime.now().getHour(), 0);
+            LocalDateTime date = LocalDateTime.of(LocalDate.now(), hour);
+
+            gc.strokeLine(timeToCanvasX(date.plusHours(j), canvas.getWidth()),
+                    timelineY+2, timeToCanvasX(date.plusHours(j), canvas.getWidth()), timelineY+timelineH);
+            gc.setFill(Color.WHITE);
+            gc.fillRect(timeToCanvasX(date.plusHours(j), canvas.getWidth())-19, timelineY + timelineH / 2 -10, 40, 20);
+            gc.setFill(Color.BLACK);
+            gc.fillText(hour.plusHours(j).format(DateTimeFormatter.ofPattern("HH:mm")),
+                    timeToCanvasX(date.plusHours(j), canvas.getWidth())-14, timelineY + timelineH / 2 + 4);
+        }
+        gc.setFill(Color.BLACK);
+        gc.strokeRect(0, timelineY, canvas.getWidth(), timelineH);
+
         return System.nanoTime() - start;
     }
 
-    public double timeToCanvasX(LocalDateTime time) {
-        double currentTime = canvas.getWidth() / 8 * 2;
-        //    Canvas timespan: canvas width divided by 8
-        double pixelsPerHour = canvas.getWidth() / 8;
-        java.time.Duration delta = java.time.Duration.between(LocalDateTime.now(), time);
-        return (((double)delta.toSeconds() / 3600) * pixelsPerHour) + currentTime;
-    }
-
-    public double pixelsInTimespan(java.time.Duration time) {
-        double pixelsPerHour = canvas.getWidth() / 8;
-        return ((double)time.toSeconds() / 3600) * pixelsPerHour;
-    }
-
+    /**
+     * Called when the program exits, and makes sure everything exits correctly
+     */
     public void exit() {
         Platform.setImplicitExit(true);
         Platform.exit();
