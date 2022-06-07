@@ -142,14 +142,15 @@ public class ScheduleController extends Application {
 
                 // Draw schedule
                 if(c.getWorkdays() != null) {
-                    Workday w = c.getWorkdays().get(0);
-                    for(Pomodoro p : w.pomodoros) {
-                        gc.setFill(Color.web("FF6962"));
-                        gc.fillRect(timeToCanvasX(p.start), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration), 50);
+                    for(Workday w : c.getWorkdays()) {
+                        for(Pomodoro p : w.pomodoros) {
+                            gc.setFill(Color.web("FF6962"));
+                            gc.fillRect(timeToCanvasX(p.start), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration), 50);
 
-                        gc.setFill(Color.web("77DD76"));
-                        double breakX = timeToCanvasX(p.start) + pixelsInTimespan(p.workDuration);
-                        gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration), 50);
+                            gc.setFill(Color.web("77DD76"));
+                            double breakX = timeToCanvasX(p.start) + pixelsInTimespan(p.workDuration);
+                            gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration), 50);
+                        }
                     }
                 }
 
