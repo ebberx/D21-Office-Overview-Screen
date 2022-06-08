@@ -255,10 +255,49 @@ public class DB {
                 String status = rs.getString(1);
                 consultant.setStatus(status);
             }
-
         }
         catch (Exception e) { e.printStackTrace(); }
     }
 
+    /**
+     * Queries the workday for updates. If there are updates overwrite the workday.
+     * @param workday Workday to query for updates.
+     * @return true if update received, false otherwise
+     */
+    public boolean getWorkdayUpdated(Workday workday) {
+        try {
+            PreparedStatement ps = con.prepareStatement("{ call getWorkdayUpdated (?,?) }");
+            ps.setInt(1, workday.id);
+            ps.setString(2, workday.updated);
+            ResultSet rs = ps.executeQuery();
+
+            // If we receive an empty ResultSet that means that the workday was not updated
+            if (!rs.isBeforeFirst() ) {
+                return false;
+            }
+
+            while(rs.next()) {
+                int id                 = rs.getInt(1);
+                String consultantEmail = rs.getString(2);
+                String start           = rs.getString(3);
+                String end             = rs.getString(4);
+                String pom_time        = rs.getString(5);
+                String b_time          = rs.getString(5);
+                String lb_time         = rs.getString(6);
+                String updated         = rs.getString(7);
+
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                workday.id = id;
+                workday.start = LocalDateTime.parse(start, df);
+                workday.end = LocalDateTime.parse(end, df);
+                workday.updated = updated;
+            }
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 

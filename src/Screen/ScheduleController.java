@@ -136,7 +136,7 @@ public class ScheduleController extends Application {
         tl.play();
 
         // Start data update with frequency of 60 sec
-        Timeline t2 = new Timeline(new KeyFrame(javafx.util.Duration.millis(60000), (e) ->{
+        Timeline t2 = new Timeline(new KeyFrame(javafx.util.Duration.millis(10000), (e) ->{
             System.out.printf("Fetching schedule update time: %d microseconds\n", fetchScheduleUpdates() / 1000);
         }));
         t2.setCycleCount(Timeline.INDEFINITE);
@@ -150,7 +150,18 @@ public class ScheduleController extends Application {
     public long fetchScheduleUpdates() {
         long start = System.nanoTime();
 
+        DB.getInstance().connect();
+        consultants = DB.getInstance().getConsultantsInOffice(officeName);
+        for(Consultant c : consultants) {
+            DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00");
 
+            if(c.getWorkdays() != null) {
+                for(Workday w : c.getWorkdays()) {
+                    DB.getInstance().getPomodorosInWorkday(w);
+                }
+            }
+        }
+        DB.getInstance().disconnect();
 
         return System.nanoTime() - start;
     }
