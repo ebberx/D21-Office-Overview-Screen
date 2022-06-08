@@ -135,7 +135,7 @@ public class ScheduleController extends Application {
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
 
-        // Start data update with frequency of 60 sec
+        // Start data update with frequency of 10 sec
         Timeline t2 = new Timeline(new KeyFrame(javafx.util.Duration.millis(10000), (e) ->{
             System.out.printf("Fetching schedule update time: %d microseconds\n", fetchScheduleUpdates() / 1000);
         }));
