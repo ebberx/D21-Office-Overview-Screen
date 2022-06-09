@@ -205,7 +205,8 @@ public class DB {
 
             // If we receive an empty ResultSet throw exception
             if (!rs.isBeforeFirst() ) {
-                throw new SQLException();
+                System.out.println("[getPomodorosInWorkday]: Empty resultset received.");
+                return;
             }
 
             // Get list of pomodoros
