@@ -4,7 +4,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.css.converter.DurationConverter;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,12 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.sql.Date;
-import java.time.Duration;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -81,7 +75,7 @@ public class ScheduleController extends Application {
 
             // -== Validation of configuration values ==-
             // Is screen is valid? Primary if not
-            if(Screen.getScreens().get(displayScreen) == null)
+            if(Screen.getScreens().size() <= displayScreen-1)
                 displayScreen = 0;
         }
         catch (Exception e) { e.printStackTrace(); }

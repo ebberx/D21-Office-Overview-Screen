@@ -173,10 +173,7 @@ public class DB {
                 String consultantEmail = rs.getString(2);
                 String start           = rs.getString(3);
                 String end             = rs.getString(4);
-                String pom_time        = rs.getString(5);
-                String b_time          = rs.getString(5);
-                String lb_time         = rs.getString(6);
-                String updated         = rs.getString(7);
+                String updated         = rs.getString(5);
 
                 // Create a new consultant object
                 try {
@@ -282,10 +279,7 @@ public class DB {
                 String consultantEmail = rs.getString(2);
                 String start           = rs.getString(3);
                 String end             = rs.getString(4);
-                String pom_time        = rs.getString(5);
-                String b_time          = rs.getString(5);
-                String lb_time         = rs.getString(6);
-                String updated         = rs.getString(7);
+                String updated         = rs.getString(5);
 
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
                 workday.id = id;

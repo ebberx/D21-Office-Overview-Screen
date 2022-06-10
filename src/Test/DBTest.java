@@ -9,7 +9,7 @@ public class DBTest {
     @org.junit.Before
     public void setup() {
         // Establish DB connection to test database
-        DB.getInstance().setDatabaseName("TOMATOSOUPclone");
+        DB.getInstance().setDatabaseName("TOMATOSOUP");
         DB.getInstance().connect();
     }
 
