@@ -8,6 +8,9 @@ import Application.ScheduleController;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * Collection of ScheduleController related tests.
+ */
 public class ScheduleControllerTest {
 
     double canvasWidth = 1200;

@@ -15,11 +15,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 /**
- *
- * @author tha
+ * Database wrapper for JBDC. Specific methods for retrieving data for the operation of the pomodoro schedule application.
+ * Manual connect & disconnect. Database to be connected to specified in configuration file in root folder.
  */
 public class DB {
-
     private static DB instance;
     private Connection con;
     private String host;

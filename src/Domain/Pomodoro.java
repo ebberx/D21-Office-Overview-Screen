@@ -4,6 +4,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * Wrapper class for the database abstraction Pomodoro.
+ */
 public class Pomodoro {
     Duration workDuration;
     Duration breakDuration;

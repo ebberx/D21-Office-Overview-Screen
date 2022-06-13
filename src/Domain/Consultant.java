@@ -2,6 +2,9 @@ package Domain;
 
 import java.util.ArrayList;
 
+/**
+ * Wrapper class for the database abstraction of a consultant.
+ */
 public class Consultant {
 
     private String email;

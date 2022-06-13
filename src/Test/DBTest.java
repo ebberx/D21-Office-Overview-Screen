@@ -4,6 +4,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import Foundation.DB;
 
+/**
+ * Collection of database related tests.
+ */
 public class DBTest {
 
     @org.junit.Before
@@ -21,7 +24,7 @@ public class DBTest {
 
     @Test
     public void DBConnectionValidation() {
-        // Test that it works
+        // Test that connection is valid
         assertTrue(DB.getInstance().validateConnection());
     }
 }

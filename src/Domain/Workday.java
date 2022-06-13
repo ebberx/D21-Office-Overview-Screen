@@ -3,6 +3,9 @@ package Domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * Wrapper class for the database abstraction Workday.
+ */
 public class Workday {
     int id;
     LocalDateTime start;
