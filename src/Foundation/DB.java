@@ -119,7 +119,8 @@ public class DB {
 
             // If we receive an empty ResultSet throw exception
             if (!rs.isBeforeFirst() ) {
-                throw new SQLException();
+                System.err.println("[getConsultantsInOffice] No consultants in office");
+                return null;
             }
 
             // Get consultants list
@@ -163,7 +164,7 @@ public class DB {
 
             // If we receive an empty ResultSet throw exception
             if (!rs.isBeforeFirst() ) {
-                System.out.println("[getWorkdaysOfConsultant]: Empty resultset received.");
+                System.err.println("[getWorkdaysOfConsultant]: Empty resultset received.");
                 return;
             }
 
@@ -204,7 +205,7 @@ public class DB {
 
             // If we receive an empty ResultSet throw exception
             if (!rs.isBeforeFirst() ) {
-                System.out.println("[getPomodorosInWorkday]: Empty resultset received.");
+                System.err.println("[getPomodorosInWorkday]: Empty resultset received.");
                 return;
             }
 

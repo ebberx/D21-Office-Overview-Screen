@@ -114,30 +114,16 @@ public class ScheduleController extends Application {
             exit();
         });
 
-        // Load initial data
-        DB.getInstance().connect();
-        consultants = DB.getInstance().getConsultantsInOffice(officeName);
-        for(Consultant c : consultants) {
-            DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00");
-
-            if(c.getWorkdays() != null) {
-                for(Workday w : c.getWorkdays()) {
-                    DB.getInstance().getPomodorosInWorkday(w);
-                }
-            }
-        }
-        DB.getInstance().disconnect();
+        // Start data update with frequency of 10 sec
+        Timeline t1 = new Timeline(new KeyFrame(javafx.util.Duration.millis(10000), (e) ->{
+            System.out.printf("Fetching schedule update time: %d microseconds\n", fetchScheduleUpdates() / 1000);
+        }));
+        t1.setCycleCount(Timeline.INDEFINITE);
+        t1.play();
 
         // Start render update with frequency of 1 sec
-        Timeline tl = new Timeline(new KeyFrame(javafx.util.Duration.millis(1000), (e) ->{
+        Timeline t2 = new Timeline(new KeyFrame(javafx.util.Duration.millis(1000), (e) ->{
             System.out.printf("Render time: %d microseconds\n", render() / 1000);
-        }));
-        tl.setCycleCount(Timeline.INDEFINITE);
-        tl.play();
-
-        // Start data update with frequency of 10 sec
-        Timeline t2 = new Timeline(new KeyFrame(javafx.util.Duration.millis(10000), (e) ->{
-            System.out.printf("Fetching schedule update time: %d microseconds\n", fetchScheduleUpdates() / 1000);
         }));
         t2.setCycleCount(Timeline.INDEFINITE);
         t2.play();
@@ -151,8 +137,11 @@ public class ScheduleController extends Application {
         long start = System.nanoTime();
 
         DB.getInstance().connect();
-        // Get consultants
+        // Get consultants and check if we received data
         consultants = DB.getInstance().getConsultantsInOffice(officeName);
+        if(consultants == null)
+            return System.nanoTime() - start;
+
         for(Consultant c : consultants) {
             // Get workdays of consutants after current date at 00:00
             DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00");
@@ -165,7 +154,6 @@ public class ScheduleController extends Application {
             }
         }
         DB.getInstance().disconnect();
-
         return System.nanoTime() - start;
     }
 
