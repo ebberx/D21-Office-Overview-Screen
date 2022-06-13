@@ -7,6 +7,8 @@ module Screen {
 
     requires junit;
 
-    exports Screen;
+    exports Application;
     exports Test;
+    exports Domain;
+    exports Foundation;
 }

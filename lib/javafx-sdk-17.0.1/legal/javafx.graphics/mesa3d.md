@@ -35,7 +35,7 @@ Mesa Component Licenses
 
 Component         Location               License
 ------------------------------------------------------------------
-Screen.ScheduleController Mesa code    src/mesa/              MIT
+Application.ScheduleController Mesa code    src/mesa/              MIT
 Device drivers    src/mesa/drivers/*     MIT, generally
 
 Gallium code      src/gallium/           MIT

@@ -1,5 +1,7 @@
-package Screen;
+package Application;
 
+import Domain.*;
+import Foundation.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -21,6 +23,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * Handles the fetching and rendering of data about consultants and their pomodoro schedules.
+ * The UI interface consists of a StackPane with a nested canvas. This is to facilitate further additions to the interface.
+ * Current limitation in UI resizing makes the UI dimensions defined on application launch, as opposed to runtime resizable.
+ */
 public class ScheduleController extends Application {
 
     StackPane scheduleRoot;
@@ -61,10 +68,9 @@ public class ScheduleController extends Application {
     /**
      * Entry point of application
      * @param stage JavaFX element that holds main scene.
-     * @throws Exception
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         // Load office name from configuration file
         try {
@@ -74,8 +80,8 @@ public class ScheduleController extends Application {
             displayScreen = Integer.parseInt(props.getProperty("screen", "1"));
 
             // -== Validation of configuration values ==-
-            // Is screen is valid? Primary if not
-            if(Screen.getScreens().size() <= displayScreen-1)
+            // Is screen is valid? Use primary if not
+            if(displayScreen > Screen.getScreens().size())
                 displayScreen = 0;
         }
         catch (Exception e) { e.printStackTrace(); }
@@ -139,18 +145,21 @@ public class ScheduleController extends Application {
 
     /**
      * Checks for new data in the database, retrieves it, and prepares it for rendering
-     * @return time spend fetching schedule update
+     * @return time spend fetching schedule update in nanoseconds
      */
     public long fetchScheduleUpdates() {
         long start = System.nanoTime();
 
         DB.getInstance().connect();
+        // Get consultants
         consultants = DB.getInstance().getConsultantsInOffice(officeName);
         for(Consultant c : consultants) {
+            // Get workdays of consutants after current date at 00:00
             DB.getInstance().getWorkdaysOfConsultant(c, LocalDate.now().toString()+" 00:00:00");
 
             if(c.getWorkdays() != null) {
                 for(Workday w : c.getWorkdays()) {
+                    // Get pomodoros for each workday
                     DB.getInstance().getPomodorosInWorkday(w);
                 }
             }
@@ -164,7 +173,7 @@ public class ScheduleController extends Application {
     int schedulePaddingTop = 100;
     /**
      * Renders the pomodoro schedule of consultants to screen
-     * @return time spent rendering
+     * @return time spent rendering in nanoseconds
      */
     public long render() {
         long start = System.nanoTime();
@@ -199,13 +208,13 @@ public class ScheduleController extends Application {
                 // Draw schedule
                 if(c.getWorkdays() != null) {
                     for(Workday w : c.getWorkdays()) {
-                        for(Pomodoro p : w.pomodoros) {
+                        for(Pomodoro p : w.getPomodoros()) {
                             gc.setFill(Color.web("FF6962"));
-                            gc.fillRect(timeToCanvasX(p.start, canvas.getWidth()), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.workDuration, canvas.getWidth()), 50);
+                            gc.fillRect(timeToCanvasX(p.getStart(), canvas.getWidth()), schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.getWorkDuration(), canvas.getWidth()), 50);
 
                             gc.setFill(Color.web("77DD76"));
-                            double breakX = timeToCanvasX(p.start, canvas.getWidth()) + pixelsInTimespan(p.workDuration, canvas.getWidth());
-                            gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.breakDuration, canvas.getWidth()), 50);
+                            double breakX = timeToCanvasX(p.getStart(), canvas.getWidth()) + pixelsInTimespan(p.getWorkDuration(), canvas.getWidth());
+                            gc.fillRect(breakX, schedulePaddingTop + 20 + (100*i), pixelsInTimespan(p.getBreakDuration(), canvas.getWidth()), 50);
                         }
                     }
                 }
@@ -237,7 +246,7 @@ public class ScheduleController extends Application {
 
         gc.setLineWidth(1);
         double l = timelineH/8;
-        gc.setLineDashes( l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l);
+        gc.setLineDashes(l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l);
         gc.strokeLine(0,timelineY+timelineH/2, canvas.getWidth(), timelineY+timelineH/2);
         gc.setLineWidth(2);
         gc.setLineDashes(0);

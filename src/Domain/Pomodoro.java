@@ -1,4 +1,4 @@
-package Screen;
+package Domain;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

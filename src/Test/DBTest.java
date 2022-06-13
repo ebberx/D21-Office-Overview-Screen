@@ -2,7 +2,7 @@ package Test;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import Screen.DB;
+import Foundation.DB;
 
 public class DBTest {
 

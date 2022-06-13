@@ -1,4 +1,4 @@
-package Screen;
+package Domain;
 
 import java.util.ArrayList;
 

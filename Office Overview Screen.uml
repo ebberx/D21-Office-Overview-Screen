@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/win/IdeaProjects/Office Overview Screen</OriginalElement>
+  <nodes>
+    <node x="906.930775646372" y="558.4862385321103">Test.DBTest</node>
+    <node x="65.90643274853801" y="0.0">Screen.Pomodoro</node>
+    <node x="892.0762611630556" y="180.23008757297737">Test.ScheduleControllerTest</node>
+    <node x="518.4913469557968" y="458.4862385321103">Screen.DB</node>
+    <node x="97.54459064327483" y="284.0">Screen.Workday</node>
+    <node x="533.4913469557968" y="169.77272727272725">Screen.ScheduleController</node>
+    <node x="130.93494152046787" y="614.0">Screen.Consultant</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Screen.ScheduleController" target="Screen.Workday" relationship="DEPENDENCY">
+      <point x="-149.5" y="28.227272727272748" />
+      <point x="161.5" y="-130.5" />
+    </edge>
+    <edge source="Screen.Consultant" target="Screen.Workday" relationship="TO_MANY">
+      <point x="-14.999941520467871" y="-116.0" />
+      <point x="-36.60959064327483" y="138.0" />
+    </edge>
+    <edge source="Screen.ScheduleController" target="Screen.Consultant" relationship="DEPENDENCY">
+      <point x="-149.5" y="-5.272727272727252" />
+      <point x="463.406432748538" y="258.0" />
+      <point x="463.406432748538" y="669.4862385321102" />
+      <point x="106.5" y="-60.51376146788982" />
+    </edge>
+    <edge source="Screen.DB" target="Screen.Workday" relationship="CREATE">
+      <point x="-164.5" y="-153.0" />
+      <point x="524.3235880655906" y="465.9862385321103" />
+      <point x="524.3235880655906" y="511.5000000000001" />
+      <point x="161.5" y="89.50000000000011" />
+    </edge>
+    <edge source="Screen.DB" target="Screen.Consultant" relationship="CREATE">
+      <point x="-164.5" y="80.49999999999989" />
+      <point x="431.2131442381323" y="699.4862385321102" />
+      <point x="431.2131442381323" y="745.0" />
+      <point x="106.5" y="15.0" />
+    </edge>
+    <edge source="Screen.ScheduleController" target="Screen.Consultant" relationship="TO_MANY">
+      <point x="-149.5" y="43.22727272727275" />
+      <point x="478.406432748538" y="306.5" />
+      <point x="478.406432748538" y="684.4862385321102" />
+      <point x="106.5" y="-45.51376146788982" />
+    </edge>
+    <edge source="Test.DBTest" target="Screen.DB" relationship="DEPENDENCY">
+      <point x="-105.50045454545466" y="-2.2737367544323206E-13" />
+      <point x="950.2107431192662" y="618.9862385321102" />
+      <point x="164.49981818181845" y="-1.1368683772161603E-13" />
+    </edge>
+    <edge source="Screen.ScheduleController" target="Screen.DB" relationship="DEPENDENCY">
+      <point x="0.0" y="93.5" />
+      <point x="0.0" y="-160.5" />
+    </edge>
+    <edge source="Screen.DB" target="Screen.Pomodoro" relationship="CREATE">
+      <point x="0.0" y="160.5" />
+      <point x="682.9913469557968" y="863.5" />
+      <point x="33.40643274853801" y="863.5" />
+      <point x="33.40643274853801" y="116.0" />
+      <point x="-190.0" y="0.0" />
+    </edge>
+    <edge source="Screen.Workday" target="Screen.Pomodoro" relationship="TO_MANY">
+      <point x="-18.138590643274824" y="-138.0" />
+      <point x="-15.000432748538003" y="116.0" />
+    </edge>
+    <edge source="Screen.ScheduleController" target="Screen.Pomodoro" relationship="DEPENDENCY">
+      <point x="-149.5" y="-53.77272727272725" />
+      <point x="190.0" y="93.5" />
+    </edge>
+    <edge source="Screen.Workday" target="Screen.Pomodoro" relationship="DEPENDENCY">
+      <point x="4.0935672518571664E-4" y="-138.0" />
+      <point x="259.045" y="258.0" />
+      <point x="255.906" y="258.0" />
+      <point x="-4.3274853800312485E-4" y="116.0" />
+    </edge>
+    <edge source="Screen.Consultant" target="Screen.Workday" relationship="DEPENDENCY">
+      <point x="5.847953212878565E-5" y="-116.0" />
+      <point x="237.435" y="587.0" />
+      <point x="259.045" y="587.0" />
+      <point x="4.0935672518571664E-4" y="138.0" />
+    </edge>
+    <edge source="Test.ScheduleControllerTest" target="Screen.ScheduleController" relationship="DEPENDENCY">
+      <point x="-104.0" y="-10.457360300250116" />
+      <point x="149.5" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="true" x="575.5000000000001" y="432.0" />
+  <SelectedNodes>
+    <node>Test.ScheduleControllerTest</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

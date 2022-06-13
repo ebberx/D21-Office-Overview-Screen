@@ -1,6 +1,9 @@
-package Screen;
+package Foundation;
 
-import javax.xml.transform.Result;
+import Domain.Consultant;
+import Domain.Pomodoro;
+import Domain.Workday;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.*;
@@ -197,7 +200,7 @@ public class DB {
     public void getPomodorosInWorkday(Workday workday) {
         try {
             PreparedStatement ps = con.prepareStatement("{ call getPomodorosInWorkday (?) }");
-            ps.setInt(1, workday.id);
+            ps.setInt(1, workday.getId());
             ResultSet rs = ps.executeQuery();
 
             // If we receive an empty ResultSet throw exception
@@ -228,7 +231,7 @@ public class DB {
             }
 
             // Assign newly received Pomodoros to workday
-            workday.pomodoros = pomodoros;
+            workday.setPomodoros(pomodoros);
 
         }
         catch (Exception e) { e.printStackTrace(); }
@@ -265,8 +268,8 @@ public class DB {
     public boolean getWorkdayUpdated(Workday workday) {
         try {
             PreparedStatement ps = con.prepareStatement("{ call getWorkdayUpdated (?,?) }");
-            ps.setInt(1, workday.id);
-            ps.setString(2, workday.updated);
+            ps.setInt(1, workday.getId());
+            ps.setString(2, workday.getUpdated());
             ResultSet rs = ps.executeQuery();
 
             // If we receive an empty ResultSet that means that the workday was not updated
@@ -282,10 +285,10 @@ public class DB {
                 String updated         = rs.getString(5);
 
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-                workday.id = id;
-                workday.start = LocalDateTime.parse(start, df);
-                workday.end = LocalDateTime.parse(end, df);
-                workday.updated = updated;
+                workday.setID(id);
+                workday.setStart(LocalDateTime.parse(start, df));
+                workday.setEnd(LocalDateTime.parse(end, df));
+                workday.setUpdated(updated);
             }
             return true;
         }

@@ -3,7 +3,7 @@ package Test;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import Screen.ScheduleController;
+import Application.ScheduleController;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
