@@ -16,17 +16,43 @@ import java.util.Properties;
 
 /**
  * Database wrapper for JBDC. Specific methods for retrieving data for the operation of the pomodoro schedule application.
- * Manual connect & disconnect. Database to be connected to specified in configuration file in root folder.
+ * Manual connect and disconnect. Database to be connected to specified in configuration file in root folder.
+ * @author Esben Christensen
  */
 public class DB {
+    /**
+     * The singleton instance of the DbB class
+     */
     private static DB instance;
+    /**
+     * Connection object to the database
+     */
     private Connection con;
+    /**
+     * Host of the database server
+     */
     private String host;
+    /**
+     * Port of the database server
+     */
     private String port;
+    /**
+     * Database name to use in the database server
+     */
     private String databaseName;
+    /**
+     * Database server username
+     */
     private String userName;
+    /**
+     * Database server password
+     */
     private String password;
 
+    /**
+     * Gets the singleton instance of the DB class. If it is not created one will be created.
+     * @return The singleton instance.
+     */
     public static DB getInstance() {
         if(instance != null)
             return instance;
@@ -35,6 +61,9 @@ public class DB {
         return instance;
     }
 
+    /**
+     * Private contructor that loads configuration settings from db.properties located in the root folder.
+     */
     private DB(){
         Properties props = new Properties();
         String fileName = "db.properties";
@@ -152,7 +181,7 @@ public class DB {
     /**
      * Invokes stored procedure that takes Consultant id, and gets the Workdays of the given Consultant.
      * @param consultant Consultant of which to get Workdays
-     * @return ArrayList of the Consultants' Workdays
+     * @param dateTime The point in time after which workdays are queried.
      */
     public void getWorkdaysOfConsultant(Consultant consultant, String dateTime) {
         try {

@@ -27,18 +27,43 @@ import java.util.Properties;
  * Handles the fetching and rendering of data about consultants and their pomodoro schedules.
  * The UI interface consists of a StackPane with a nested canvas. This is to facilitate further additions to the interface.
  * Current limitation in UI resizing makes the UI dimensions defined on application launch, as opposed to runtime resizable.
+ * @author Esben Christensen
  */
 public class ScheduleController extends Application {
 
+    /**
+     * Root element of the JavaFX application
+     */
     StackPane scheduleRoot;
+    /**
+     * Main scene of the JavaFX application
+     */
     Scene scene;
+    /**
+     * Stage of the JavaFX application
+     */
     Stage stage;
+    /**
+     * Canvas element which will be drawn to
+     */
     Canvas canvas;
+    /**
+     * List of consultants, storing all information about schedules
+     */
     ArrayList<Consultant> consultants = new ArrayList<Consultant>();
+    /**
+     * The canvas' current graphics context. Used for drawing.
+     */
     GraphicsContext gc;
 
     // Configuration values
+    /**
+     * The office name of which to display pomodoro schedules
+     */
     String officeName;
+    /**
+     * Which screen to display to
+     */
     int displayScreen;
 
     /**
@@ -157,7 +182,9 @@ public class ScheduleController extends Application {
         return System.nanoTime() - start;
     }
 
-
+    /**
+     * Padding variable for schedule layout
+     */
     int schedulePaddingTop = 100;
     /**
      * Renders the pomodoro schedule of consultants to screen

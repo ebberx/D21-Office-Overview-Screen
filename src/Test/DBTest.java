@@ -6,9 +6,13 @@ import Foundation.DB;
 
 /**
  * Collection of database related tests.
+ * @author Esben Christensen
  */
 public class DBTest {
 
+    /**
+     * Preparatory setup for the tests to be carried out.
+     */
     @org.junit.Before
     public void setup() {
         // Establish DB connection to test database
@@ -16,12 +20,19 @@ public class DBTest {
         DB.getInstance().connect();
     }
 
+    /**
+     * Clean-up of tests, deconstruction.
+     */
     @org.junit.After
     public void tearDown() {
         // Close connection
         DB.getInstance().disconnect();
     }
 
+    /**
+     * Validates the database connection.
+     * Effectful.
+     */
     @Test
     public void DBConnectionValidation() {
         // Test that connection is valid

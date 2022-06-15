@@ -1,4 +1,8 @@
-module Screen {
+/**
+ * Module definition of the application
+ * @author Esben Christensen
+ */
+module Application {
     requires javafx.controls;
     requires javafx.graphics;
     requires javafx.media;
