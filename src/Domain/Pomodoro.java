@@ -18,11 +18,11 @@ public class Pomodoro {
      */
     Duration breakDuration;
     /**
-     * Point in time where the pomodoro starts
+     * Point in time when the pomodoro starts
      */
     LocalDateTime start;
     /**
-     * Point in time where the pomodoro ends
+     * Point in time when the pomodoro ends
      */
     LocalDateTime end;
 
