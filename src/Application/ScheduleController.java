@@ -106,7 +106,6 @@ public class ScheduleController extends Application {
 
             // -== Validation of configuration values ==-
             // Is screen is valid? Use primary if not
-            System.out.println(displayScreen + " " + Screen.getScreens().size());
             if(displayScreen >= Screen.getScreens().size())
                 displayScreen = 0;
         }
